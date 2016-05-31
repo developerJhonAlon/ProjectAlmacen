@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./WEB-INF/templates/plantillaPrincipal.xhtml"
+                xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="titulo">Catalogo Camion</ui:define>
+
+    <ui:define name="contenido">
+        <p:layout fullPage="true">
+            <p:layoutUnit position="north" resizable="true" 
+                          header="SISTEMA DE CAMIONES  ">
+
+                <p:outputLabel>Administración de Camiones</p:outputLabel>
+
+            </p:layoutUnit>
+
+            <center>
+                <p:layoutUnit position="center">
+                    <h:form id="panelCamion">
+
+                        <p:growl id="growl" life="2000" />
+                        <p:panel id="panelFiltro" header="Resultados de la Busqueda">
+                            <p:panelGrid id="gridFiltro" columns="3" >
+                                <p:outputLabel for="valorFiltro" value="Ingrese la matricula:"/>
+
+                                <p:inputText id="valorFiltro" value="#{catalogoCamionBean.valorBusqueda}"
+                                             required="true" style="width:100%;"
+                                             maxlength="20"/>
+
+                                <p:commandButton id="botonBuscar" value="Buscar"
+                                                 update="tablaCamion,growl"
+                                                 actionListener="#{catalogoCamionBean.busquedaCamion()}"
+                                                 process="@parent" icon="ui-icon-search"
+                                                 styleClass="ui-priority-primary"/>
+
+                            </p:panelGrid>
+
+                            <p:dataTable id="tablaCamion" var="cam"
+                                         value="#{catalogoCamionBean.listaCamiones}" selectionMode="single"
+                                         selection="#{catalogoCamionBean.camionSeleccionado}"
+                                         rowKey="#{cam.idCamion}" paginator="true" rows="5"
+                                         paginatorPosition="top" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                         paginatorAlwaysVisible="true"
+                                         emptyMessage="No se encontraron Datos">
+
+                                <p:ajax event="rowSelect" listener="#{catalogoCamionBean.onRowSelect}" />
+
+                                <p:ajax event="rowUnselect"
+                                        listener="#{catalogoCamionBean.onRowUnselect}" />
+
+                                <p:column headerText="MATRICULA">
+                                    <h:outputText value="#{cam.matricula}" />
+                                </p:column>
+
+                                <p:column headerText="MAX. VOLUMEN (cm3)">
+                                    <h:outputText value="#{cam.maxVolumen}" />
+                                </p:column>
+
+                                <p:column headerText="MAX. PESO (kg)">
+                                    <h:outputText value="#{cam.maxPeso}" />
+                                </p:column>
+                                
+                                 <p:column headerText="ESTADO">
+                                     <h:outputText value="#{cam.estado}" />
+                                </p:column>
+
+                               	<f:facet name="footer">
+                                    <p:commandButton process="tablaCamion"
+                                                     update=":formModal:modalCamion,:formModal:panelModalCamion"
+                                                     icon="ui-icon-plusthick" value="Agregar" ajax="true"
+                                                     actionListener="#{catalogoCamionBean.botonAgregar()}"
+                                                     oncomplete="PF('dlg').show()" />
+
+
+                                    <p:commandButton process="tablaCamion"
+                                                     update=":formModal:modalCamion,:formModal:panelModalCamion"
+                                                     icon="ui-icon-pencil" value="Editar" ajax="true"
+                                                     actionListener="#{catalogoCamionBean.botonEditar()}"
+                                                     oncomplete="PF('dlg').show()">
+                                    </p:commandButton>
+
+
+                                </f:facet>
+                            </p:dataTable>
+
+
+                        </p:panel>
+                    </h:form>
+
+
+                </p:layoutUnit>
+            </center>
+
+
+        </p:layout>
+
+        <!-- Modal  -->
+        <h:form id="formModal">
+            <p:dialog id="modalCamion" header="Camion"
+                      widgetVar="dlg" modal="true" showEffect="fade" hideEffect="fade"
+                      resizable="false" closable="false">
+
+                <p:panel id="panelModalCamion" style="text-align:center;">
+                    <p:panelGrid id="gridModalCamion" columns="2"
+                                 rendered="#{not empty catalogoCamionBean.camionModal}"
+                                 columnClasses="label,value" >
+
+                        <p:outputLabel for="valorNumero" value="Matricula: " />
+                        <p:inputText id="valorNumero"
+                                     value="#{catalogoCamionBean.camionModal.matricula}"
+                                     required="true" style="width:100%;" maxlength="30">
+
+                        </p:inputText>
+
+                        <p:outputLabel for="valorDireccion" value="Max. Volumen (cm3): " />
+                        <p:inputText id="valorDireccion"
+                                     value="#{catalogoCamionBean.camionModal.maxVolumen}"
+                                     required="true" style="width:100%;" maxlength="10">
+
+                        </p:inputText>
+
+                        <p:outputLabel for="valorTelefono" value="Max. Peso (kg): " />
+                        <p:inputText id="valorTelefono"
+                                     value="#{catalogoCamionBean.camionModal.maxPeso}"
+                                     required="true" style="width:100%;" maxlength="10" >
+                           
+                        </p:inputText>
+
+                        <h:outputText value="Estado: " />
+                        <p:selectBooleanCheckbox value="#{catalogoCamionBean.camionModal.estado}" />
+
+                    </p:panelGrid>
+                    
+                    <p:spacer height="20px" />
+                    <p:commandButton id="botonGuardar" value="Aceptar"
+                                     update=":panelCamion:tablaCamion,:panelCamion:growl,panelModalCamion"
+                                     actionListener="#{catalogoCamionBean.botonAceptar()}"
+                                     styleClass="ui-priority-primary"
+                                     process="@this formModal:panelModalCamion">
+                        <p:confirm header="Confirmación" message="¿Enviar Cambios?"
+                                   icon="ui-icon-alert" />
+                    </p:commandButton>
+                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                        <p:commandButton value="Si" type="button"
+                                         styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                        <p:commandButton value="No" type="button"
+                                         styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                    </p:confirmDialog>
+
+                    <p:commandButton id="botonCerrar" value="Cerrar"
+                                     update="panelModalCamion"
+                                     actionListener="#{catalogoCamionBean.botonCerrar()}"
+                                     styleClass="ui-priority-primary" process="@this"
+                                     oncomplete="PF('dlg').hide()">
+                        <p:resetInput target="panelModalCamion" />
+                    </p:commandButton>
+
+                </p:panel>
+
+
+
+            </p:dialog>
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>

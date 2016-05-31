@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./WEB-INF/templates/plantillaPrincipal.xhtml"
+                xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="titulo">Catalogo Tienda</ui:define>
+
+    <ui:define name="contenido">
+        <p:layout fullPage="true">
+            <p:layoutUnit position="north" resizable="true" 
+                          header="SISTEMA DE CAMIONES  ">
+
+                <p:outputLabel>Administración de Tiendas</p:outputLabel>
+
+            </p:layoutUnit>
+
+            <center>
+                <p:layoutUnit position="center">
+                    <h:form id="panelTienda">
+
+                        <p:growl id="growl" life="2000" />
+                        <p:panel id="panelFiltro" header="Resultados de la Busqueda">
+                            <p:panelGrid id="gridFiltro" columns="3" >
+                                <p:outputLabel for="valorFiltro" value="Ingrese el nombre"/>
+
+                                <p:inputText id="valorFiltro" value="#{catalogoTiendaBean.valorBusqueda}"
+                                             required="true" style="width:100%;"
+                                             maxlength="20"/>
+
+                                <p:commandButton id="botonBuscar" value="Buscar"
+                                                 update="tablaTienda,growl"
+                                                 actionListener="#{catalogoTiendaBean.busquedaTienda()}"
+                                                 process="@parent" icon="ui-icon-search"
+                                                 styleClass="ui-priority-primary"/>
+
+                            </p:panelGrid>
+
+                            <p:dataTable id="tablaTienda" var="tie"
+                                         value="#{catalogoTiendaBean.listaTiendas}" selectionMode="single"
+                                         selection="#{catalogoTiendaBean.tiendaSeleccionada}"
+                                         rowKey="#{tie.idTienda}" paginator="true" rows="5"
+                                         paginatorPosition="top" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                         paginatorAlwaysVisible="true"
+                                         emptyMessage="No se encontraron Datos">
+
+                                <p:ajax event="rowSelect" listener="#{catalogoTiendaBean.onRowSelect}" />
+
+                                <p:ajax event="rowUnselect"
+                                        listener="#{catalogoTiendaBean.onRowUnselect}" />
+
+                                <p:column headerText="NOMBRE">
+                                    <h:outputText value="#{tie.nombre}" />
+                                </p:column>
+
+                                <p:column headerText="DIRECCIÓN">
+                                    <h:outputText value="#{tie.direccion}" />
+                                </p:column>
+
+                                <p:column headerText="TELÉFONO">
+                                    <h:outputText value="#{tie.telefono}" />
+                                </p:column>
+                                
+                                 <p:column headerText="ESTADO">
+                                     <h:outputText value="#{tie.estado}" />
+                                </p:column>
+
+                               	<f:facet name="footer">
+                                    <p:commandButton process="tablaTienda"
+                                                     update=":formModal:modalTienda,:formModal:panelModalTienda"
+                                                     icon="ui-icon-plusthick" value="Agregar" ajax="true"
+                                                     actionListener="#{catalogoTiendaBean.botonAgregar()}"
+                                                     oncomplete="PF('dlg').show()" />
+
+
+                                    <p:commandButton process="tablaTienda"
+                                                     update=":formModal:modalTienda,:formModal:panelModalTienda"
+                                                     icon="ui-icon-pencil" value="Editar" ajax="true"
+                                                     actionListener="#{catalogoTiendaBean.botonEditar()}"
+                                                     oncomplete="PF('dlg').show()">
+                                    </p:commandButton>
+
+
+                                </f:facet>
+                            </p:dataTable>
+
+
+                        </p:panel>
+                    </h:form>
+
+
+                </p:layoutUnit>
+            </center>
+
+
+        </p:layout>
+
+        <!-- Modal  -->
+        <h:form id="formModal">
+            <p:dialog id="modalTienda" header="Tienda"
+                      widgetVar="dlg" modal="true" showEffect="fade" hideEffect="fade"
+                      resizable="false" closable="false">
+
+                <p:panel id="panelModalTienda" style="text-align:center;">
+                    <p:panelGrid id="gridModalTienda" columns="2"
+                                 rendered="#{not empty catalogoTiendaBean.tiendaModal}"
+                                 columnClasses="label,value" >
+
+                        <p:outputLabel for="valorNumero" value="Nombre: " />
+                        <p:inputText id="valorNumero"
+                                     value="#{catalogoTiendaBean.tiendaModal.nombre}"
+                                     required="true" style="width:100%;" maxlength="30">
+
+                        </p:inputText>
+
+                        <p:outputLabel for="valorDireccion" value="Dirección: " />
+                        <p:inputText id="valorDireccion"
+                                     value="#{catalogoTiendaBean.tiendaModal.direccion}"
+                                     required="true" style="width:100%;" maxlength="30">
+
+                        </p:inputText>
+
+                        <p:outputLabel for="valorTelefono" value="Teléfono: " />
+                        <p:inputText id="valorTelefono"
+                                     value="#{catalogoTiendaBean.tiendaModal.telefono}"
+                                     required="true" style="width:100%;" maxlength="10"
+                                     validatorMessage="Teléfono Invalido">
+                            <f:validateRegex pattern="[0-9]{2}+-[0-9]{7}" />
+                        </p:inputText>
+
+                        <h:outputText value="Estado: " />
+                        <p:selectBooleanCheckbox value="#{catalogoTiendaBean.tiendaModal.estado}" />
+
+                    </p:panelGrid>
+                    
+                    <p:spacer height="20px" />
+                    <p:commandButton id="botonGuardar" value="Aceptar"
+                                     update=":panelTienda:tablaTienda,:panelTienda:growl,panelModalTienda"
+                                     actionListener="#{catalogoTiendaBean.botonAceptar()}"
+                                     styleClass="ui-priority-primary"
+                                     process="@this formModal:panelModalTienda">
+                        <p:confirm header="Confirmación" message="¿Enviar Cambios?"
+                                   icon="ui-icon-alert" />
+                    </p:commandButton>
+                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                        <p:commandButton value="Si" type="button"
+                                         styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                        <p:commandButton value="No" type="button"
+                                         styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                    </p:confirmDialog>
+
+                    <p:commandButton id="botonCerrar" value="Cerrar"
+                                     update="panelModalTienda"
+                                     actionListener="#{catalogoTiendaBean.botonCerrar()}"
+                                     styleClass="ui-priority-primary" process="@this"
+                                     oncomplete="PF('dlg').hide()">
+                        <p:resetInput target="panelModalTienda" />
+                    </p:commandButton>
+
+                </p:panel>
+
+
+
+            </p:dialog>
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>
