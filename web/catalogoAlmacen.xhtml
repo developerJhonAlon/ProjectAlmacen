@@ -15,94 +15,83 @@ and open the template in the editor.
     <ui:define name="titulo">Catalogo Almacen</ui:define>
 
     <ui:define name="contenido">
-        <p:layout fullPage="true">
-            <p:layoutUnit position="north" resizable="true" 
-                          header="SISTEMA DE CAMIONES  ">
 
-                <p:outputLabel>Administración de Almacenes</p:outputLabel>
+        <h:form id="panelAlmacen">
 
-            </p:layoutUnit>
+            <p:growl id="growl" life="2000" />
+            <p:panel id="panelFiltro" header="Administración de Almacenes">
+                <p:panelGrid id="gridFiltro" columns="3" >
+                    <p:outputLabel for="valorFiltro" value="Ingrese la dirección"/>
 
-            <center>
-                <p:layoutUnit position="center">
-                    <h:form id="panelAlmacen">
+                    <p:inputText id="valorFiltro" value="#{catalogoAlmacenBean.valorBusqueda}"
+                                 required="true" style="width:100%;"
+                                 maxlength="20"/>
 
-                        <p:growl id="growl" life="2000" />
-                        <p:panel id="panelFiltro" header="Resultados de la Busqueda">
-                            <p:panelGrid id="gridFiltro" columns="3" >
-                                <p:outputLabel for="valorFiltro" value="Ingrese la dirección"/>
+                    <p:commandButton id="botonBuscar" value="Buscar"
+                                     update="tablaAlmacen,growl"
+                                     actionListener="#{catalogoAlmacenBean.busquedaAlmacen()}"
+                                     process="@parent" icon="ui-icon-search"
+                                     styleClass="ui-priority-primary"/>
 
-                                <p:inputText id="valorFiltro" value="#{catalogoAlmacenBean.valorBusqueda}"
-                                             required="true" style="width:100%;"
-                                             maxlength="20"/>
+                </p:panelGrid>
 
-                                <p:commandButton id="botonBuscar" value="Buscar"
-                                                 update="tablaAlmacen,growl"
-                                                 actionListener="#{catalogoAlmacenBean.busquedaAlmacen()}"
-                                                 process="@parent" icon="ui-icon-search"
-                                                 styleClass="ui-priority-primary"/>
+                <p:dataTable id="tablaAlmacen" var="alm"
+                             value="#{catalogoAlmacenBean.listaAlmacenes}" selectionMode="single"
+                             selection="#{catalogoAlmacenBean.almacenSeleccionado}"
+                             rowKey="#{alm.idAlmacen}" paginator="true" rows="5"
+                             paginatorPosition="top" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             paginatorAlwaysVisible="true"
+                             emptyMessage="No se encontraron Datos">
 
-                            </p:panelGrid>
+                    <p:ajax event="rowSelect" listener="#{catalogoAlmacenBean.onRowSelect}" />
 
-                            <p:dataTable id="tablaAlmacen" var="alm"
-                                         value="#{catalogoAlmacenBean.listaAlmacenes}" selectionMode="single"
-                                         selection="#{catalogoAlmacenBean.almacenSeleccionado}"
-                                         rowKey="#{alm.idAlmacen}" paginator="true" rows="5"
-                                         paginatorPosition="top" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                         paginatorAlwaysVisible="true"
-                                         emptyMessage="No se encontraron Datos">
+                    <p:ajax event="rowUnselect"
+                            listener="#{catalogoAlmacenBean.onRowUnselect}" />
 
-                                <p:ajax event="rowSelect" listener="#{catalogoAlmacenBean.onRowSelect}" />
+                    <p:column headerText="NÚMERO">
+                        <h:outputText value="#{alm.numero}" />
+                    </p:column>
 
-                                <p:ajax event="rowUnselect"
-                                        listener="#{catalogoAlmacenBean.onRowUnselect}" />
+                    <p:column headerText="DIRECCIÓN">
+                        <h:outputText value="#{alm.direccion}" />
+                    </p:column>
 
-                                <p:column headerText="NÚMERO">
-                                    <h:outputText value="#{alm.numero}" />
-                                </p:column>
+                    <p:column headerText="TELÉFONO">
+                        <h:outputText value="#{alm.telefono}" />
+                    </p:column>
 
-                                <p:column headerText="DIRECCIÓN">
-                                    <h:outputText value="#{alm.direccion}" />
-                                </p:column>
+                    <p:column headerText="ESTADO">
+                        <p:selectBooleanCheckbox value="#{alm.estado}" />            
 
-                                <p:column headerText="TELÉFONO">
-                                    <h:outputText value="#{alm.telefono}" />
-                                </p:column>
-                                
-                                 <p:column headerText="ESTADO">
-                                    <p:selectBooleanCheckbox value="#{alm.estado}" />            
+                    </p:column>
 
-                                </p:column>
-
-                               	<f:facet name="footer">
-                                    <p:commandButton process="tablaAlmacen"
-                                                     update=":formModal:modalAlmacen,:formModal:panelModalAlmacen"
-                                                     icon="ui-icon-plusthick" value="Agregar" ajax="true"
-                                                     actionListener="#{catalogoAlmacenBean.botonAgregar()}"
-                                                     oncomplete="PF('dlg').show()" />
+                    <f:facet name="footer">
+                        <p:commandButton process="tablaAlmacen"
+                                         update=":formModal:modalAlmacen,:formModal:panelModalAlmacen"
+                                         icon="ui-icon-plusthick" value="Agregar" ajax="true"
+                                         actionListener="#{catalogoAlmacenBean.botonAgregar()}"
+                                         oncomplete="PF('dlg').show()" />
 
 
-                                    <p:commandButton process="tablaAlmacen"
-                                                     update=":formModal:modalAlmacen,:formModal:panelModalAlmacen"
-                                                     icon="ui-icon-pencil" value="Editar" ajax="true"
-                                                     actionListener="#{catalogoAlmacenBean.botonEditar()}"
-                                                     oncomplete="PF('dlg').show()">
-                                    </p:commandButton>
+                        <p:commandButton process="tablaAlmacen"
+                                         update=":formModal:modalAlmacen,:formModal:panelModalAlmacen"
+                                         icon="ui-icon-pencil" value="Editar" ajax="true"
+                                         actionListener="#{catalogoAlmacenBean.botonEditar()}"
+                                         oncomplete="PF('dlg').show()">
+                        </p:commandButton>
 
 
-                                </f:facet>
-                            </p:dataTable>
+                    </f:facet>
+                </p:dataTable>
 
 
-                        </p:panel>
-                    </h:form>
+            </p:panel>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="modales">
 
 
-                </p:layoutUnit>
-            </center>
-
-
-        </p:layout>
 
         <!-- Modal  -->
         <h:form id="formModal">
@@ -141,7 +130,7 @@ and open the template in the editor.
                         <p:selectBooleanCheckbox value="#{catalogoAlmacenBean.almacenModal.estado}" />
 
                     </p:panelGrid>
-                    
+
                     <p:spacer height="20px" />
                     <p:commandButton id="botonGuardar" value="Aceptar"
                                      update=":panelAlmacen:tablaAlmacen,:panelAlmacen:growl,panelModalAlmacen"

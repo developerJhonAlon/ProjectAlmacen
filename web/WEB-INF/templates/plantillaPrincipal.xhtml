@@ -20,20 +20,38 @@
 
         <h:body>
 
-
-
-            <div id="content">
-                <ui:insert name="contenido">Aqui va el contenido</ui:insert>
-            </div>
-
             <center>
-                <div id="pie">
-                    <ui:insert name="pie">
-                        <p class="piePagina">Derechos reservados ESPE</p>
-                    </ui:insert>
-                </div>
+                <div id="content">
+                    <p:layout fullPage="true">
+                        <!--Creacion de Menu-->
+                        <p:layoutUnit position="north" resizable="true" >
+                            <h:form id="panelMenu">
+                                <p:menubar >
+                                    <p:menuitem value="Almacen" update="@form" ajax="true" action="catalogoAlmacen" icon="ui-icon-wrench" />
+                                    <p:menuitem value="Camión" update="@form" ajax="true" action="catalogoCamion" icon="ui-icon-wrench" />
+                                    <p:menuitem value="Tienda" update="@form" ajax="true" action="catalogoTienda" icon="ui-icon-cart" />
+                                 
+                                </p:menubar>
+                            </h:form>
+
+
+                        </p:layoutUnit>
+
+                        <p:layoutUnit position="center">
+                            <ui:insert name="contenido">Sistemas de Camiones</ui:insert>
+                        </p:layoutUnit>
+
+                        <p:layoutUnit position="south" resizable="true">
+                            <p class="piePagina">Derechos reservados ESPE</p>
+                        </p:layoutUnit>
+
+                    </p:layout>
+                    <ui:insert name="modales">Aqui va el modal</ui:insert>
+
+                </div>           
 
             </center>
+
 
         </h:body>
 

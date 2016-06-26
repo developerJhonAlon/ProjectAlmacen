@@ -15,95 +15,86 @@ and open the template in the editor.
     <ui:define name="titulo">Catalogo Camion</ui:define>
 
     <ui:define name="contenido">
-        <p:layout fullPage="true">
-            <p:layoutUnit position="north" resizable="true" 
-                          header="SISTEMA DE CAMIONES  ">
 
-                <p:outputLabel>Administración de Camiones</p:outputLabel>
+        <h:form id="panelCamion">
 
-            </p:layoutUnit>
+            <p:growl id="growl" life="2000" />
+            <p:panel id="panelFiltro" header="Administración de Camiones">
+                <p:panelGrid id="gridFiltro" columns="3" >
+                    <p:outputLabel for="valorFiltro" value="Ingrese la matricula:"/>
 
-            <center>
-                <p:layoutUnit position="center">
-                    <h:form id="panelCamion">
+                    <p:inputText id="valorFiltro" value="#{catalogoCamionBean.valorBusqueda}"
+                                 required="true" style="width:100%;"
+                                 maxlength="20"/>
 
-                        <p:growl id="growl" life="2000" />
-                        <p:panel id="panelFiltro" header="Resultados de la Busqueda">
-                            <p:panelGrid id="gridFiltro" columns="3" >
-                                <p:outputLabel for="valorFiltro" value="Ingrese la matricula:"/>
+                    <p:commandButton id="botonBuscar" value="Buscar"
+                                     update="tablaCamion,growl"
+                                     actionListener="#{catalogoCamionBean.busquedaCamion()}"
+                                     process="@parent" icon="ui-icon-search"
+                                     styleClass="ui-priority-primary"/>
 
-                                <p:inputText id="valorFiltro" value="#{catalogoCamionBean.valorBusqueda}"
-                                             required="true" style="width:100%;"
-                                             maxlength="20"/>
+                </p:panelGrid>
 
-                                <p:commandButton id="botonBuscar" value="Buscar"
-                                                 update="tablaCamion,growl"
-                                                 actionListener="#{catalogoCamionBean.busquedaCamion()}"
-                                                 process="@parent" icon="ui-icon-search"
-                                                 styleClass="ui-priority-primary"/>
+                <p:dataTable id="tablaCamion" var="cam"
+                             value="#{catalogoCamionBean.listaCamiones}" selectionMode="single"
+                             selection="#{catalogoCamionBean.camionSeleccionado}"
+                             rowKey="#{cam.idCamion}" paginator="true" rows="5"
+                             paginatorPosition="top" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             paginatorAlwaysVisible="true"
+                             emptyMessage="No se encontraron Datos">
 
-                            </p:panelGrid>
+                    <p:ajax event="rowSelect" listener="#{catalogoCamionBean.onRowSelect}" />
 
-                            <p:dataTable id="tablaCamion" var="cam"
-                                         value="#{catalogoCamionBean.listaCamiones}" selectionMode="single"
-                                         selection="#{catalogoCamionBean.camionSeleccionado}"
-                                         rowKey="#{cam.idCamion}" paginator="true" rows="5"
-                                         paginatorPosition="top" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                         paginatorAlwaysVisible="true"
-                                         emptyMessage="No se encontraron Datos">
+                    <p:ajax event="rowUnselect"
+                            listener="#{catalogoCamionBean.onRowUnselect}" />
 
-                                <p:ajax event="rowSelect" listener="#{catalogoCamionBean.onRowSelect}" />
+                    <p:column headerText="MATRICULA">
+                        <h:outputText value="#{cam.matricula}" />
+                    </p:column>
 
-                                <p:ajax event="rowUnselect"
-                                        listener="#{catalogoCamionBean.onRowUnselect}" />
+                    <p:column headerText="MAX. VOLUMEN (cm3)">
+                        <h:outputText value="#{cam.maxVolumen}" />
+                    </p:column>
 
-                                <p:column headerText="MATRICULA">
-                                    <h:outputText value="#{cam.matricula}" />
-                                </p:column>
+                    <p:column headerText="MAX. PESO (kg)">
+                        <h:outputText value="#{cam.maxPeso}" />
+                    </p:column>
 
-                                <p:column headerText="MAX. VOLUMEN (cm3)">
-                                    <h:outputText value="#{cam.maxVolumen}" />
-                                </p:column>
-
-                                <p:column headerText="MAX. PESO (kg)">
-                                    <h:outputText value="#{cam.maxPeso}" />
-                                </p:column>
-
-                                <p:column headerText="ESTADO">
-                                    <p:selectBooleanCheckbox value="#{cam.estado}" />
+                    <p:column headerText="ESTADO">
+                        <p:selectBooleanCheckbox value="#{cam.estado}" />
 
 
-                                </p:column>
+                    </p:column>
 
-                               	<f:facet name="footer">
-                                    <p:commandButton process="tablaCamion"
-                                                     update=":formModal:modalCamion,:formModal:panelModalCamion"
-                                                     icon="ui-icon-plusthick" value="Agregar" ajax="true"
-                                                     actionListener="#{catalogoCamionBean.botonAgregar()}"
-                                                     oncomplete="PF('dlg').show()" />
-
-
-                                    <p:commandButton process="tablaCamion"
-                                                     update=":formModal:modalCamion,:formModal:panelModalCamion"
-                                                     icon="ui-icon-pencil" value="Editar" ajax="true"
-                                                     actionListener="#{catalogoCamionBean.botonEditar()}"
-                                                     oncomplete="PF('dlg').show()">
-                                    </p:commandButton>
+                    <f:facet name="footer">
+                        <p:commandButton process="tablaCamion"
+                                         update=":formModal:modalCamion,:formModal:panelModalCamion"
+                                         icon="ui-icon-plusthick" value="Agregar" ajax="true"
+                                         actionListener="#{catalogoCamionBean.botonAgregar()}"
+                                         oncomplete="PF('dlg').show()" />
 
 
-                                </f:facet>
-                            </p:dataTable>
+                        <p:commandButton process="tablaCamion"
+                                         update=":formModal:modalCamion,:formModal:panelModalCamion"
+                                         icon="ui-icon-pencil" value="Editar" ajax="true"
+                                         actionListener="#{catalogoCamionBean.botonEditar()}"
+                                         oncomplete="PF('dlg').show()">
+                        </p:commandButton>
 
 
-                        </p:panel>
-                    </h:form>
+                    </f:facet>
+                </p:dataTable>
 
 
-                </p:layoutUnit>
-            </center>
+            </p:panel>
+        </h:form>
 
 
-        </p:layout>
+
+    </ui:define>
+
+    <ui:define name="modales">
+
 
         <!-- Modal  -->
         <h:form id="formModal">

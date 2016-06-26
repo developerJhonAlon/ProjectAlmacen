@@ -15,95 +15,84 @@ and open the template in the editor.
     <ui:define name="titulo">Catalogo Tienda</ui:define>
 
     <ui:define name="contenido">
-        <p:layout fullPage="true">
-            <p:layoutUnit position="north" resizable="true" 
-                          header="SISTEMA DE CAMIONES  ">
 
-                <p:outputLabel>Administración de Tiendas</p:outputLabel>
+        <h:form id="panelTienda">
 
-            </p:layoutUnit>
+            <p:growl id="growl" life="2000" />
+            <p:panel id="panelFiltro" header="Administración de Tiendas">
+                <p:panelGrid id="gridFiltro" columns="3" >
+                    <p:outputLabel for="valorFiltro" value="Ingrese el nombre"/>
 
-            <center>
-                <p:layoutUnit position="center">
-                    <h:form id="panelTienda">
+                    <p:inputText id="valorFiltro" value="#{catalogoTiendaBean.valorBusqueda}"
+                                 required="true" style="width:100%;"
+                                 maxlength="20"/>
 
-                        <p:growl id="growl" life="2000" />
-                        <p:panel id="panelFiltro" header="Resultados de la Busqueda">
-                            <p:panelGrid id="gridFiltro" columns="3" >
-                                <p:outputLabel for="valorFiltro" value="Ingrese el nombre"/>
+                    <p:commandButton id="botonBuscar" value="Buscar"
+                                     update="tablaTienda,growl"
+                                     actionListener="#{catalogoTiendaBean.busquedaTienda()}"
+                                     process="@parent" icon="ui-icon-search"
+                                     styleClass="ui-priority-primary"/>
 
-                                <p:inputText id="valorFiltro" value="#{catalogoTiendaBean.valorBusqueda}"
-                                             required="true" style="width:100%;"
-                                             maxlength="20"/>
+                </p:panelGrid>
 
-                                <p:commandButton id="botonBuscar" value="Buscar"
-                                                 update="tablaTienda,growl"
-                                                 actionListener="#{catalogoTiendaBean.busquedaTienda()}"
-                                                 process="@parent" icon="ui-icon-search"
-                                                 styleClass="ui-priority-primary"/>
+                <p:dataTable id="tablaTienda" var="tie"
+                             value="#{catalogoTiendaBean.listaTiendas}" selectionMode="single"
+                             selection="#{catalogoTiendaBean.tiendaSeleccionada}"
+                             rowKey="#{tie.idTienda}" paginator="true" rows="5"
+                             paginatorPosition="top" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             paginatorAlwaysVisible="true"
+                             emptyMessage="No se encontraron Datos">
 
-                            </p:panelGrid>
+                    <p:ajax event="rowSelect" listener="#{catalogoTiendaBean.onRowSelect}" />
 
-                            <p:dataTable id="tablaTienda" var="tie"
-                                         value="#{catalogoTiendaBean.listaTiendas}" selectionMode="single"
-                                         selection="#{catalogoTiendaBean.tiendaSeleccionada}"
-                                         rowKey="#{tie.idTienda}" paginator="true" rows="5"
-                                         paginatorPosition="top" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                         paginatorAlwaysVisible="true"
-                                         emptyMessage="No se encontraron Datos">
+                    <p:ajax event="rowUnselect"
+                            listener="#{catalogoTiendaBean.onRowUnselect}" />
 
-                                <p:ajax event="rowSelect" listener="#{catalogoTiendaBean.onRowSelect}" />
+                    <p:column headerText="NOMBRE">
+                        <h:outputText value="#{tie.nombre}" />
+                    </p:column>
 
-                                <p:ajax event="rowUnselect"
-                                        listener="#{catalogoTiendaBean.onRowUnselect}" />
+                    <p:column headerText="DIRECCIÓN">
+                        <h:outputText value="#{tie.direccion}" />
+                    </p:column>
 
-                                <p:column headerText="NOMBRE">
-                                    <h:outputText value="#{tie.nombre}" />
-                                </p:column>
+                    <p:column headerText="TELÉFONO">
+                        <h:outputText value="#{tie.telefono}" />
+                    </p:column>
 
-                                <p:column headerText="DIRECCIÓN">
-                                    <h:outputText value="#{tie.direccion}" />
-                                </p:column>
-
-                                <p:column headerText="TELÉFONO">
-                                    <h:outputText value="#{tie.telefono}" />
-                                </p:column>
-                                
-                                 <p:column headerText="ESTADO">
-                                    <p:selectBooleanCheckbox value="#{tie.estado}" />
+                    <p:column headerText="ESTADO">
+                        <p:selectBooleanCheckbox value="#{tie.estado}" />
 
 
-                                </p:column>
+                    </p:column>
 
-                               	<f:facet name="footer">
-                                    <p:commandButton process="tablaTienda"
-                                                     update=":formModal:modalTienda,:formModal:panelModalTienda"
-                                                     icon="ui-icon-plusthick" value="Agregar" ajax="true"
-                                                     actionListener="#{catalogoTiendaBean.botonAgregar()}"
-                                                     oncomplete="PF('dlg').show()" />
-
-
-                                    <p:commandButton process="tablaTienda"
-                                                     update=":formModal:modalTienda,:formModal:panelModalTienda"
-                                                     icon="ui-icon-pencil" value="Editar" ajax="true"
-                                                     actionListener="#{catalogoTiendaBean.botonEditar()}"
-                                                     oncomplete="PF('dlg').show()">
-                                    </p:commandButton>
+                    <f:facet name="footer">
+                        <p:commandButton process="tablaTienda"
+                                         update=":formModal:modalTienda,:formModal:panelModalTienda"
+                                         icon="ui-icon-plusthick" value="Agregar" ajax="true"
+                                         actionListener="#{catalogoTiendaBean.botonAgregar()}"
+                                         oncomplete="PF('dlg').show()" />
 
 
-                                </f:facet>
-                            </p:dataTable>
+                        <p:commandButton process="tablaTienda"
+                                         update=":formModal:modalTienda,:formModal:panelModalTienda"
+                                         icon="ui-icon-pencil" value="Editar" ajax="true"
+                                         actionListener="#{catalogoTiendaBean.botonEditar()}"
+                                         oncomplete="PF('dlg').show()">
+                        </p:commandButton>
 
 
-                        </p:panel>
-                    </h:form>
+                    </f:facet>
+                </p:dataTable>
 
 
-                </p:layoutUnit>
-            </center>
+            </p:panel>
+        </h:form>
 
 
-        </p:layout>
+    </ui:define>
+
+    <ui:define name="modales">
 
         <!-- Modal  -->
         <h:form id="formModal">
@@ -142,7 +131,7 @@ and open the template in the editor.
                         <p:selectBooleanCheckbox value="#{catalogoTiendaBean.tiendaModal.estado}" />
 
                     </p:panelGrid>
-                    
+
                     <p:spacer height="20px" />
                     <p:commandButton id="botonGuardar" value="Aceptar"
                                      update=":panelTienda:tablaTienda,:panelTienda:growl,panelModalTienda"
