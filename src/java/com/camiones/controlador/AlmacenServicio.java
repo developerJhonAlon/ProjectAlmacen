@@ -33,11 +33,11 @@ public class AlmacenServicio implements Serializable {
         int confirma = cn.modificarAlmacen(almacen);
 
         if (confirma != 1) {
-            System.out.println("AgregarExtension: Error Dato de Personal no guardado");
+            System.out.println("editarAlmacen: Error ");
         } else {
             List<Almacen> almacenEditado = new ArrayList<>();
-            ResultSet res = cn.consultarPorIdAlmacen(almacen.getIdAlmacen());
-            try {
+            ResultSet res = cn.consultarListaAlmacenes();
+         try {
                 while (res.next()) {
                     almacenEditado.add(new Almacen(res.getInt("ALM_ID"),
                             res.getInt("ALM_NUMERO"), res.getString("ALM_DIRECCION"),
@@ -59,7 +59,7 @@ public class AlmacenServicio implements Serializable {
         int confirma = cn.guardarAlmacen(almacen);
 
         if (confirma != 1) {
-            System.out.println("AgregarExtension: Error Dato de Personal no guardado");
+            System.out.println("guardarAlmcen: Error ");
         } else {
             List<Almacen> almacenEditado = new ArrayList<>();
             ResultSet res = cn.consultarListaAlmacenes();

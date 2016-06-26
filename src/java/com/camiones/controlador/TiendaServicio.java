@@ -52,10 +52,10 @@ public class TiendaServicio implements Serializable {
 
         int confirma = cn.modificarTienda(tienda);
         if (confirma != 1) {
-            System.out.println("AgregarExtension: Error Dato de Personal no guardado");
+            System.out.println("editarTienda: Error ");
         } else {
             List<Tienda> tiendaEditado = new ArrayList<>();
-            ResultSet res = cn.consultarPorIdTienda(tienda.getIdTienda());
+            ResultSet res = cn.consultarListaTiendas();
 
             try {
                 while (res.next()) {
@@ -74,7 +74,7 @@ public class TiendaServicio implements Serializable {
         int confirma = cn.guardarTienda(tienda);
 
         if (confirma != 1) {
-            System.out.println("AgregarExtension: Error Dato de Personal no guardado");
+            System.out.println("guardarTienda: Error");
 
         } else {
             List<Tienda> tiendaEditado = new ArrayList<>();

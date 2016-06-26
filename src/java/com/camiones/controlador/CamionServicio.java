@@ -32,10 +32,10 @@ public class CamionServicio implements Serializable {
          int confirma = cn.modificarCamion(camion);
          
          if(confirma != 1){
-             System.out.println("AgregarExtension: Error Dato de Personal no guardado");     
+             System.out.println("editarCamion: Error ");     
          }else{
-             List<Camion> camionEditado = new ArrayList<>();
-             ResultSet res = cn.consultarPorIdCamion(camion.getIdCamion());
+          List<Camion> camionEditado = new ArrayList<>();
+            ResultSet res = cn.consultarListaCamiones();
              try {
                 while (res.next()) {
                     camionEditado.add(new Camion(res.getInt("CAM_ID"),
@@ -58,7 +58,7 @@ public class CamionServicio implements Serializable {
         int confirma = cn.guardarCamion(camion);
 
         if (confirma != 1) {
-            System.out.println("AgregarExtension: Error Dato de Personal no guardado");
+            System.out.println("guardarCamion: Error ");
         } else {
             List<Camion> camionEditado = new ArrayList<>();
             ResultSet res = cn.consultarListaCamiones();
