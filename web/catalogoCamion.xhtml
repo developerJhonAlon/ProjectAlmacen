@@ -68,9 +68,11 @@ and open the template in the editor.
                                 <p:column headerText="MAX. PESO (kg)">
                                     <h:outputText value="#{cam.maxPeso}" />
                                 </p:column>
-                                
-                                 <p:column headerText="ESTADO">
-                                     <h:outputText value="#{cam.estado}" />
+
+                                <p:column headerText="ESTADO">
+                                    <p:selectBooleanCheckbox value="#{cam.estado}" />
+
+
                                 </p:column>
 
                                	<f:facet name="footer">
@@ -132,14 +134,14 @@ and open the template in the editor.
                         <p:inputText id="valorTelefono"
                                      value="#{catalogoCamionBean.camionModal.maxPeso}"
                                      required="true" style="width:100%;" maxlength="10" >
-                           
+
                         </p:inputText>
 
                         <h:outputText value="Estado: " />
                         <p:selectBooleanCheckbox value="#{catalogoCamionBean.camionModal.estado}" />
 
                     </p:panelGrid>
-                    
+
                     <p:spacer height="20px" />
                     <p:commandButton id="botonGuardar" value="Aceptar"
                                      update=":panelCamion:tablaCamion,:panelCamion:growl,panelModalCamion"
